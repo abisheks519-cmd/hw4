@@ -1,0 +1,8 @@
+# Backend (FastAPI + PydanticAI shop agent). Install from the backend/ folder:
+#   python3 -m venv .venv && .venv/bin/pip install -r ../requirements.txt
+fastapi>=0.141,<1
+uvicorn[standard]>=0.54
+email-validator>=2.3
+pydantic-ai-slim[anthropic]>=2.51,<3
+python-dotenv>=1.2
+pillow>=12.3

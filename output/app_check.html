@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs — Live App Check</title>
+<style>
+  :root { --navy: #00356b; --ink: #1b2430; --muted: #5f6b7a; --line: #e2e7ee; --ok: #1a7f4b; --bg: #f6f8fb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+  header { background: var(--navy); color: #fff; padding: 40px 24px 32px; }
+  header .wrap, main { max-width: 1040px; margin: 0 auto; }
+  header h1 { margin: 0 0 6px; font-size: 2rem; }
+  header p { margin: 0; color: #d3e1f5; }
+  main { padding: 28px 24px 64px; }
+  .summary { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 36px; }
+  .summary table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .summary th, .summary td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .summary th { background: #eef2f7; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .summary tr:last-child td { border-bottom: 0; }
+  .summary a { color: var(--navy); font-weight: 600; }
+  .pass { display: inline-block; background: #e6f6ec; color: var(--ok); font-weight: 700; font-size: 0.8rem; padding: 2px 10px; border-radius: 999px; }
+  section.check { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 28px 28px 20px; margin-bottom: 32px; }
+  section.check h2 { margin: 0 0 4px; color: var(--navy); font-size: 1.45rem; }
+  .ask { margin: 0 0 18px; color: var(--muted); }
+  figure { margin: 0 0 22px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; }
+  figure img.narrow { max-width: 560px; }
+  figcaption { margin-top: 10px; font-size: 0.97rem; }
+  figcaption strong { color: var(--navy); }
+  .note { font-size: 0.9rem; color: var(--muted); border-left: 3px solid var(--line); padding: 2px 0 2px 12px; margin: 0 0 8px; }
+  code { background: #eef2f7; padding: 1px 6px; border-radius: 5px; font-size: 0.88em; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Campus Customs — Live App Check</h1>
+    <p>Problem 11 · Tested on the running website (FastAPI backend + React frontend) on October 5, 2026. Click any screenshot to open it full size.</p>
+  </div>
+</header>
+
+<main>
+  <div class="summary">
+    <table>
+      <thead><tr><th>#</th><th>What was checked</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><a href="#check-1">Chat checks an item's stock level and price, using the real values in the database</a></td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>2</td><td><a href="#check-2">A category question makes product cards appear on the page</a></td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>3</td><td><a href="#check-3">Problem 9 usability feature: shopping cart with total price</a></td><td><span class="pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <section class="check" id="check-1">
+    <h2>Check 1 — Chat checks the inventory level of an item</h2>
+    <p class="ask">Asked on the product page for the 2025 Yale Vs Harvard T Shirt: <em>"How many are left in size L, and how much is it?"</em></p>
+
+    <figure>
+      <a href="app_check_images/inventory.png"><img src="app_check_images/inventory.png" alt="Chat assistant answering a stock and price question on the 2025 Yale Vs Harvard T Shirt product page"></a>
+      <figcaption>
+        <strong>1a. The chat answer.</strong> The shopper is on the product page, so the assistant knows which shirt "it" means.
+        It replies that the shirt is <strong>$32.00</strong> and has <strong>2 in stock in size L</strong>, and flags that as low stock.
+        It also attaches the product's card ($32.00 · 112 in stock).
+      </figcaption>
+    </figure>
+
+    <figure>
+      <a href="app_check_images/inventory_db.png"><img class="narrow" src="app_check_images/inventory_db.png" alt="Database viewer showing the same product with price $32.00 and stock by size"></a>
+      <figcaption>
+        <strong>1b. The same item in <code>campus_customs.db</code>.</strong> The database viewer shows the same product: price <strong>$32.00</strong>, size <strong>L = 2</strong>, and 112 in total
+        (XS 25, S 25, M 20, L 2, XL 25, XXL 15). The chat's numbers match the database exactly; the assistant didn't make them up.
+      </figcaption>
+    </figure>
+    <p class="note">Setup note: no Anthropic API key was set for this test, so the chat ran in its built-in fallback mode. That mode looks up price and stock with the same database functions the AI agent's tools use.</p>
+  </section>
+
+  <section class="check" id="check-2">
+    <h2>Check 2 — Dynamic search result cards after a category question</h2>
+    <p class="ask">Asked in the chat on the Home page: <em>"What t shirts do you have?"</em></p>
+
+    <figure>
+      <a href="app_check_images/search_cards.png"><img src="app_check_images/search_cards.png" alt="T-Shirts result grid shown on the page after asking the chat about t-shirts"></a>
+      <figcaption>
+        <strong>2a. Cards appear on the page.</strong> The assistant replies "We have 25 t-shirts" and the website shows a <strong>T-Shirts</strong> results section with all
+        <strong>25</strong> matching items as product cards (image, name, price, short description, colors).
+        The chat also previews the first three, with a "View all 25 on the page" button.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <a href="app_check_images/search_card_detail.png"><img src="app_check_images/search_card_detail.png" alt="Product page opened from one of the result cards, with a back-to-results link"></a>
+      <figcaption>
+        <strong>2b. A result card opens the full product page.</strong> Clicking the Big Yale Tri Blend T Shirt card opens its product page: large image, price, stock, colors, and sizes.
+        A <strong>"Back to your assistant results: T-Shirts"</strong> link returns to the cards, and the breadcrumb shows Home › Products › T-Shirts › Big Yale Tri Blend T Shirt.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="check" id="check-3">
+    <h2>Check 3 — Usability feature from Problem 9: shopping cart with total</h2>
+    <p class="ask">Added a Champion Reverse Weave Hoodie 1 (size M, ×1) and two 2025 Yale Vs Harvard T Shirts (size S, ×2), then opened the cart.</p>
+
+    <figure>
+      <a href="app_check_images/cart_total.png"><img src="app_check_images/cart_total.png" alt="Cart page with two items, order summary, and total"></a>
+      <figcaption>
+        <strong>3. The cart totals everything before checkout.</strong> Each line shows its size, unit price, stock, a quantity control, and a line total ($68.00 + $64.00).
+        The order summary adds it up: subtotal <strong>$132.00</strong> for 3 items, <strong>free shipping</strong> (over $75), CT tax <strong>$8.38</strong>, and a
+        total of <strong>$140.38</strong>. The same total is on the "Proceed to checkout" button.
+        The header cart badge shows 3, and the breadcrumb shows Home › Cart. Prices come from the database, not the browser.
+      </figcaption>
+    </figure>
+  </section>
+</main>
+</body>
+</html>
